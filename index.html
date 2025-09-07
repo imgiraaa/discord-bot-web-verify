@@ -4,122 +4,156 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pusat Verifikasi & Bantuan V3</title>
-    <!-- Memuat Tailwind CSS v4 -->
+    <!-- Menggunakan CDN Tailwind CSS v4 yang Anda berikan -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Memuat Font Inter dari Google Fonts -->
+    <!-- Font Modern (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Mengaplikasikan font Inter ke seluruh halaman */
+        /* Konfigurasi dasar */
         body { 
-            font-family: 'Inter', sans-serif; 
-            -webkit-tap-highlight-color: transparent; /* Menghilangkan highlight biru saat disentuh di mobile */
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F5; /* Warna off-white yang hangat */
+        }
+        /* Kelas untuk tab aktif dengan warna kopi */
+        .tab-active { 
+            border-bottom-color: #6F4E37; /* Coffee */
+            color: #6F4E37; 
+            font-weight: 600; 
+        }
+        /* Animasi fade-in-up untuk elemen yang muncul */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        /* Transisi halus untuk semua elemen */
+        * {
+            transition: all 0.2s ease-in-out;
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 antialiased">
+<body class="flex flex-col items-center justify-center min-h-screen p-4 md:p-6">
 
-    <!-- Kontainer utama dengan padding dan lebar maksimum -->
-    <div class="container mx-auto max-w-4xl p-4 sm:p-6 lg:p-8">
-        
-        <!-- Header Halaman -->
-        <header class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Pusat Verifikasi & Bantuan V3</h1>
-            <p class="text-gray-600 mt-1">Selesaikan verifikasi untuk mendapatkan akses penuh atau hubungi bantuan jika perlu.</p>
+    <!-- Kontainer Utama dengan Animasi -->
+    <div class="w-full max-w-4xl mx-auto fade-in-up">
+        <header class="mb-8 text-center">
+            <h1 class="text-4xl font-bold text-stone-800">Pusat Verifikasi & Bantuan</h1>
+            <p class="text-stone-600 mt-2">Selesaikan verifikasi untuk mendapatkan akses penuh atau hubungi bantuan jika perlu.</p>
         </header>
 
-        <main>
-            <!-- Kartu utama yang membungkus konten -->
-            <div class="bg-white p-6 sm:p-8 rounded-xl shadow-sm">
-                
-                <!-- Navigasi Tab -->
-                <div class="border-b border-gray-200 mb-6">
-                    <nav class="-mb-px flex space-x-6" aria-label="Tabs">
-                        <button id="tab-verify" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-blue-600 border-blue-600">
-                            Verifikasi Akun
-                        </button>
-                        <button id="tab-help" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300">
-                            Layanan Bantuan
-                        </button>
-                    </nav>
-                </div>
+        <main class="bg-white rounded-2xl shadow-lg border border-stone-200 overflow-hidden">
+            <!-- Navigasi Tab -->
+            <div class="border-b border-stone-200">
+                <nav class="flex -mb-px px-6" aria-label="Tabs">
+                    <button id="tab-verify" class="flex-1 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-stone-500 hover:text-stone-700 hover:border-stone-300">Verifikasi Akun</button>
+                    <button id="tab-help" class="flex-1 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-stone-500 hover:text-stone-700 hover:border-stone-300">Layanan Bantuan</button>
+                </nav>
+            </div>
 
-                <!-- Konten Halaman Verifikasi -->
-                <div id="page-verify">
-                    <div id="status-box" class="p-4 rounded-md mb-6 hidden"></div>
-                    <div id="captcha-container">
-                        <h2 class="text-lg font-semibold text-gray-900 mb-2">Verifikasi Captcha</h2>
-                        <p class="text-gray-600 mb-4">Buktikan bahwa Anda manusia dengan menyelesaikan captcha di bawah.</p>
-                        
-                        <div class="bg-gray-200 rounded-lg p-4 mb-4 flex justify-center items-center">
-                            <canvas id="captchaCanvas" width="200" height="70"></canvas>
-                        </div>
-                        
-                        <input type="text" id="captchaInput" placeholder="Masukkan teks di atas" autocomplete="off" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-4 transition-colors">
-                        
-                        <button id="submitButton" class="w-full bg-blue-600 text-white font-semibold py-2.5 px-4 rounded-md hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed flex items-center justify-center transition-colors">
-                            <svg id="spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <!-- Konten Halaman (dengan transisi) -->
+            <div class="p-6 md:p-8 transition-opacity duration-300">
+                <!-- Konten Verifikasi -->
+                <div id="content-verify">
+                    <div id="main-title" class="text-center">
+                        <h2 class="text-2xl font-semibold text-stone-900">Verifikasi Captcha</h2>
+                        <p class="mt-1 text-stone-600">Buktikan bahwa Anda manusia dengan menyelesaikan captcha di bawah.</p>
+                    </div>
+
+                    <div id="captcha-container" class="mt-6 max-w-sm mx-auto">
+                        <canvas id="captchaCanvas" width="200" height="70" class="mx-auto border border-stone-300 rounded-lg bg-stone-50"></canvas>
+                        <input type="text" id="captchaInput" placeholder="Masukkan teks di atas" class="mt-4 w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-800 focus:border-amber-800 text-center text-lg tracking-widest">
+                        <button id="submitButton" class="mt-4 w-full bg-stone-800 text-white font-semibold py-3 px-4 rounded-lg hover:bg-stone-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-800 flex items-center justify-center transform hover:scale-105">
+                            <svg id="spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
                             Verifikasi
                         </button>
                     </div>
+                    <div id="result" class="mt-4 text-center text-sm font-medium min-h-12 flex items-center justify-center p-2"></div>
                 </div>
 
-                <!-- Konten Halaman Bantuan -->
-                <div id="page-help" class="hidden">
-                    <h2 class="text-lg font-semibold text-gray-900 mb-2">Formulir Bantuan</h2>
-                    <p class="text-gray-600 mb-4">Jika Anda mengalami masalah saat verifikasi, silakan isi formulir di bawah ini untuk menghubungi admin.</p>
-                    
-                    <div id="complaint-status" class="p-4 rounded-md mb-6 hidden"></div>
-                    
-                    <form id="complaint-form" class="space-y-4">
-                        <input type="text" id="name" placeholder="Nama Lengkap Anda" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                        <input type="email" id="email" placeholder="Alamat Email (Opsional)" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                        <input type="text" id="discordName" placeholder="Nama Pengguna Discord (Contoh: girabase)" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                        <textarea id="message" placeholder="Jelaskan masalah yang Anda alami secara detail" rows="4" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"></textarea>
-                        <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-2.5 px-4 rounded-md hover:bg-blue-700 transition-colors">Kirim Keluhan</button>
+                <!-- Konten Bantuan -->
+                <div id="content-help" class="hidden">
+                     <div class="text-center">
+                        <h2 class="text-2xl font-semibold text-stone-900">Hubungi Layanan Bantuan</h2>
+                        <p class="mt-1 text-stone-600">Jika Anda mengalami masalah, silakan isi formulir di bawah ini.</p>
+                    </div>
+                    <form id="complaint-form" class="mt-6 max-w-lg mx-auto space-y-4">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-stone-700">Nama Lengkap Anda</label>
+                            <input type="text" id="name" required class="mt-1 block w-full px-4 py-3 border border-stone-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-800 focus:border-amber-800">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-stone-700">Alamat Email (Opsional)</label>
+                            <input type="email" id="email" class="mt-1 block w-full px-4 py-3 border border-stone-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-800 focus:border-amber-800">
+                        </div>
+                        <div>
+                            <label for="discord-name" class="block text-sm font-medium text-stone-700">Nama Pengguna Discord</label>
+                            <input type="text" id="discord-name" required placeholder="Contoh: Username#0001" class="mt-1 block w-full px-4 py-3 border border-stone-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-800 focus:border-amber-800">
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-stone-700">Jelaskan Masalah Anda</label>
+                            <textarea id="message" rows="4" required class="mt-1 block w-full px-4 py-3 border border-stone-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-800 focus:border-amber-800"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-stone-800 text-white font-semibold py-3 px-4 rounded-lg hover:bg-stone-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-800 transform hover:scale-105">
+                            Kirim Keluhan
+                        </button>
                     </form>
+                    <div id="complaint-status" class="mt-4 text-center text-sm font-medium min-h-12 flex items-center justify-center p-2"></div>
                 </div>
             </div>
         </main>
     </div>
 
 <script>
-    // ===================================================================================
-    // == BAGIAN PALING PENTING ==
-    // Ganti URL di bawah ini dengan URL publik PERMANEN yang Anda dapatkan dari Railway.
-    // Ini adalah "jembatan" yang menghubungkan website ini dengan bot Anda.
-    // ===================================================================================
+    // --- KONFIGURASI PENTING ---
+    // Ganti URL di bawah ini dengan URL PUBLIK PERMANEN dari Replit/Vercel/Railway Anda
     const backendUrl = 'https://40ca4934-6d7d-45a0-8829-91f844783de2-00-mzatg9rrhgb7.pike.replit.dev/verify';
     const complaintUrl = 'https://40ca4934-6d7d-45a0-8829-91f844783de2-00-mzatg9rrhgb7.pike.replit.dev/complaint';
+    // -------------------------
 
-    // Mendapatkan elemen dari Halaman
-    const tabVerify = document.getElementById('tab-verify');
-    const tabHelp = document.getElementById('tab-help');
-    const pageVerify = document.getElementById('page-verify');
-    const pageHelp = document.getElementById('page-help');
-    const statusBox = document.getElementById('status-box');
-    const captchaContainer = document.getElementById('captcha-container');
-    const canvas = document.getElementById('captchaCanvas');
-    const ctx = canvas.getContext('2d');
-    const captchaInput = document.getElementById('captchaInput');
-    const submitButton = document.getElementById('submitButton');
-    const spinner = document.getElementById('spinner');
-    
-    // Form keluhan
-    const complaintForm = document.getElementById('complaint-form');
-    const complaintStatus = document.getElementById('complaint-status');
+    // Mengambil parameter dari URL
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get('userId');
+    const guildId = params.get('guildId');
 
+    // Variabel global untuk captcha
     let captchaText = '';
-    let params = new URLSearchParams(window.location.search);
-    let userId = params.get('userId');
-    let guildId = params.get('guildId');
+
+    // Elemen DOM
+    const elements = {
+        tabVerify: document.getElementById('tab-verify'),
+        tabHelp: document.getElementById('tab-help'),
+        contentVerify: document.getElementById('content-verify'),
+        contentHelp: document.getElementById('content-help'),
+        captchaCanvas: document.getElementById('captchaCanvas'),
+        captchaInput: document.getElementById('captchaInput'),
+        submitButton: document.getElementById('submitButton'),
+        resultDiv: document.getElementById('result'),
+        spinner: document.getElementById('spinner'),
+        complaintForm: document.getElementById('complaint-form'),
+        complaintStatus: document.getElementById('complaint-status'),
+        mainTitle: document.getElementById('main-title'),
+        captchaContainer: document.getElementById('captcha-container'),
+    };
 
     // Fungsi untuk menggambar captcha baru
     function drawCaptcha() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#f1f5f9'; // Latar belakang canvas
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const ctx = elements.captchaCanvas.getContext('2d');
+        ctx.clearRect(0, 0, elements.captchaCanvas.width, elements.captchaCanvas.height);
+        ctx.fillStyle = '#f9fafb'; // bg-stone-50
+        ctx.fillRect(0, 0, elements.captchaCanvas.width, elements.captchaCanvas.height);
         
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         captchaText = '';
@@ -127,85 +161,69 @@
             captchaText += chars.charAt(Math.floor(Math.random() * chars.length));
         }
 
-        ctx.font = 'bold 36px Inter';
-        ctx.fillStyle = '#1e293b'; // Warna teks captcha
+        ctx.font = '32px Inter';
+        ctx.fillStyle = '#1c1917'; // text-stone-900
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(captchaText, canvas.width / 2, canvas.height / 2);
-
-        // Menambahkan beberapa garis acak untuk mempersulit OCR bot
-        for (let i = 0; i < 5; i++) {
-            ctx.strokeStyle = '#94a3b8';
-            ctx.beginPath();
-            ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-            ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
-            ctx.stroke();
-        }
+        ctx.fillText(captchaText, elements.captchaCanvas.width / 2, elements.captchaCanvas.height / 2);
     }
 
-    // Fungsi untuk menampilkan status (sukses, error, warning)
-    function showStatus(type, message) {
-        statusBox.textContent = message;
-        if (type === 'error') {
-            statusBox.className = 'p-4 rounded-md mb-6 bg-red-100 text-red-700';
-        } else if (type === 'success') {
-            statusBox.className = 'p-4 rounded-md mb-6 bg-green-100 text-green-700';
-        } else {
-            statusBox.className = 'p-4 rounded-md mb-6 bg-yellow-100 text-yellow-700';
-        }
-        statusBox.classList.remove('hidden');
+    // Fungsi untuk memperbarui status dengan animasi
+    function updateStatus(element, message, isError = false) {
+        element.innerHTML = `<div class="p-3 rounded-md ${isError ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'} fade-in-up">${message}</div>`;
     }
 
-    // Logika untuk verifikasi captcha
-    async function verifyCaptcha() {
-        if (captchaInput.value.toUpperCase() !== captchaText) {
-            showStatus('error', 'Captcha salah, silakan coba lagi.');
-            captchaInput.value = '';
+    // Event listener untuk tombol verifikasi
+    elements.submitButton.addEventListener('click', async () => {
+        elements.submitButton.disabled = true;
+        elements.spinner.classList.remove('hidden');
+        elements.resultDiv.innerHTML = '';
+
+        if (elements.captchaInput.value.toUpperCase() !== captchaText) {
+            updateStatus(elements.resultDiv, 'Captcha salah, silakan coba lagi.', true);
+            elements.captchaInput.value = '';
             drawCaptcha();
+        } else {
+            try {
+                const response = await fetch(backendUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, guildId }),
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Gagal menghubungi server.');
+                
+                elements.captchaContainer.classList.add('hidden');
+                elements.mainTitle.innerHTML = `<h2 class="text-2xl font-semibold text-stone-900">Verifikasi Berhasil!</h2>`;
+                updateStatus(elements.resultDiv, 'Anda berhasil diverifikasi! Anda bisa menutup halaman ini sekarang.');
+            } catch (error) {
+                updateStatus(elements.resultDiv, `Terjadi kesalahan: ${error.message}`, true);
+                drawCaptcha();
+            }
+        }
+        elements.submitButton.disabled = false;
+        elements.spinner.classList.add('hidden');
+    });
+
+    // Event listener untuk form keluhan
+    elements.complaintForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        elements.complaintStatus.innerHTML = `<div class="text-amber-800">Mengirim...</div>`;
+
+        // BUG FIX: Memastikan guildId ada sebelum mengirim
+        if (!guildId) {
+            updateStatus(elements.complaintStatus, 'Gagal: ID Server tidak ditemukan di URL. Silakan buka kembali halaman ini dari Discord.', true);
             return;
         }
-        
-        submitButton.disabled = true;
-        spinner.classList.remove('hidden');
-        statusBox.classList.add('hidden');
 
-        try {
-            const response = await fetch(backendUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId, guildId }),
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                captchaContainer.classList.add('hidden');
-                showStatus('success', 'Verifikasi Berhasil! Anda sekarang dapat menutup halaman ini.');
-            } else {
-                throw new Error(data.message || 'Gagal menghubungi server verifikasi.');
-            }
-
-        } catch (error) {
-            showStatus('error', `Terjadi kesalahan: ${error.message || 'Gagal terhubung ke server.'}`);
-            submitButton.disabled = false;
-            drawCaptcha();
-        } finally {
-            spinner.classList.add('hidden');
-        }
-    }
-    
-    // Logika untuk mengirim keluhan
-    async function handleComplaint(event) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
         const complaintData = {
-            name: formData.get('name'),
-            email: formData.get('email'),
-            discordName: formData.get('discordName'),
-            message: formData.get('message'),
-            guildId: guildId // Kirim juga guildId agar bot tahu servernya
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            discordName: document.getElementById('discord-name').value,
+            message: document.getElementById('message').value,
+            guildId: guildId // guildId sekarang ditambahkan
         };
-        
+
         try {
             const response = await fetch(complaintUrl, {
                 method: 'POST',
@@ -213,50 +231,52 @@
                 body: JSON.stringify(complaintData)
             });
             const data = await response.json();
-            if (data.success) {
-                complaintStatus.className = 'p-4 rounded-md mb-6 bg-green-100 text-green-700';
-                complaintStatus.textContent = 'Keluhan Anda telah berhasil dikirim. Admin akan segera meninjau.';
-            } else {
-                throw new Error(data.message);
-            }
+            if (!response.ok) throw new Error(data.message || 'Terjadi kesalahan pada server.');
+            
+            updateStatus(elements.complaintStatus, 'Keluhan Anda telah berhasil dikirim. Admin akan segera menindaklanjuti.');
+            elements.complaintForm.reset();
         } catch (error) {
-            complaintStatus.className = 'p-4 rounded-md mb-6 bg-red-100 text-red-700';
-            complaintStatus.textContent = `Gagal mengirim keluhan: ${error.message}`;
+            updateStatus(elements.complaintStatus, `Gagal mengirim keluhan: ${error.message}`, true);
         }
-        complaintStatus.classList.remove('hidden');
-        complaintForm.reset();
-    }
-
-
-    // Event Listeners
-    tabVerify.addEventListener('click', () => {
-        pageVerify.classList.remove('hidden');
-        pageHelp.classList.add('hidden');
-        tabVerify.className = 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-blue-600 border-blue-600';
-        tabHelp.className = 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300';
     });
 
-    tabHelp.addEventListener('click', () => {
-        pageVerify.classList.add('hidden');
-        pageHelp.classList.remove('hidden');
-        tabHelp.className = 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-blue-600 border-blue-600';
-        tabVerify.className = 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300';
-    });
-    
-    submitButton.addEventListener('click', verifyCaptcha);
-    complaintForm.addEventListener('submit', handleComplaint);
+    // Logika untuk tab
+    function switchTab(activeTab) {
+        const tabs = [elements.tabVerify, elements.tabHelp];
+        const contents = [elements.contentVerify, elements.contentHelp];
 
-
-    // Inisialisasi Halaman
-    if (!userId || !guildId) {
-        showStatus('error', 'URL Tidak Valid. Harap pastikan Anda membuka link ini dari tombol verifikasi di server Discord.');
-        captchaContainer.classList.add('hidden');
-    } else {
-        drawCaptcha();
+        tabs.forEach((tab, index) => {
+            const content = contents[index];
+            if (tab === activeTab) {
+                tab.classList.add('tab-active');
+                tab.classList.remove('text-stone-500');
+                content.classList.remove('hidden');
+                content.classList.add('fade-in-up');
+            } else {
+                tab.classList.remove('tab-active');
+                tab.classList.add('text-stone-500');
+                content.classList.add('hidden');
+                content.classList.remove('fade-in-up');
+            }
+        });
     }
+
+    elements.tabVerify.addEventListener('click', () => switchTab(elements.tabVerify));
+    elements.tabHelp.addEventListener('click', () => switchTab(elements.tabHelp));
+
+    // Inisialisasi halaman
+    document.addEventListener('DOMContentLoaded', () => {
+        if (!userId || !guildId) {
+            elements.captchaContainer.classList.add('hidden');
+            updateStatus(elements.resultDiv, 'URL tidak valid. Pastikan Anda membuka link ini dari Discord dan coba lagi.', true);
+        } else {
+            drawCaptcha();
+        }
+        // Atur tab default
+        switchTab(elements.tabVerify);
+    });
 
 </script>
-
 </body>
 </html>
 
