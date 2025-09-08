@@ -1,0 +1,220 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+
+/* --- Reset Dasar & Pengaturan Global --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: #f2ebe6;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    overflow-x: hidden; /* Mencegah scroll horizontal yang tidak diinginkan */
+}
+
+/* --- Desain Kartu Utama --- */
+.card-container {
+    width: 100%;
+    max-width: 450px;
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    /* Animasi masuk untuk kartu */
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    color: #d9534f;
+    /* Animasi berkedip untuk judul H1 */
+    animation: blink 1s step-start 0s infinite;
+}
+
+/* --- Wrapper Konten (Gambar & Teks) --- */
+.image-container {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    /* Animasi masuk untuk gambar */
+    animation: slideInTop 0.6s ease-out forwards;
+    animation-delay: 0.3s; /* Sedikit delay agar terlihat berurutan */
+    opacity: 0; /* Mulai dari tidak terlihat */
+}
+
+.image-container img {
+    max-width: 100px;
+    height: auto;
+}
+
+.text-container h2,
+.text-container h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.alert-info {
+    margin-bottom: 1.5rem;
+    /* Animasi masuk untuk info alert */
+    animation: slideInLeft 0.7s ease-out forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
+}
+
+.alert-info p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* --- Kotak Pemberitahuan --- */
+.notification-box {
+    background-color: #fdf6f0;
+    padding: 1.2rem;
+    border-radius: 8px;
+    border-left: 5px solid #e5a983;
+    /* Animasi masuk untuk kotak notifikasi */
+    animation: slideInRight 0.7s ease-out forwards;
+    animation-delay: 0.7s;
+    opacity: 0;
+}
+
+.notification-box h3 {
+    color: #af6c41;
+}
+
+.notification-box p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* --- Footer --- */
+.container-footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #777;
+    border-top: 1px solid #eee;
+    padding-top: 1.5rem;
+    /* Animasi masuk untuk footer */
+    animation: fadeIn 0.8s ease-out forwards;
+    animation-delay: 1s;
+    opacity: 0;
+}
+
+.container-footer p {
+    margin-bottom: 0.5rem;
+}
+
+.container-footer a {
+    color: #3f72af;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.container-footer a:hover {
+    text-decoration: underline;
+}
+
+/* --- KEYFRAMES UNTUK ANIMASI --- */
+
+/* Animasi berkedip untuk teks */
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Animasi memudar masuk */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Animasi slide masuk dari atas */
+@keyframes slideInTop {
+    0% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Animasi slide masuk dari kiri */
+@keyframes slideInLeft {
+    0% {
+        transform: translateX(-50px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Animasi slide masuk dari kanan */
+@keyframes slideInRight {
+    0% {
+        transform: translateX(50px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* --- DESAIN RESPONSIVE (Untuk Layar Lebih Besar) --- */
+@media (min-width: 768px) {
+    .card-container {
+        max-width: 800px;
+    }
+
+    .content-wrapper {
+        display: flex;
+        align-items: flex-start;
+        gap: 2rem;
+    }
+
+    .image-container {
+        flex: 0 0 120px;
+        margin-bottom: 0;
+    }
+
+    .image-container img {
+        max-width: 120px;
+    }
+
+    .text-container {
+        flex: 1;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+}
